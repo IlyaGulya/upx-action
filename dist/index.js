@@ -52,15 +52,28 @@ function downloadUpx() {
         const upx_version = '4.2.2';
         const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'upx-action-'));
         if (os.type() == 'Linux') {
+            const arch = os.arch();
+            let archSuffix;
+            switch (arch) {
+                case 'x64':
+                    archSuffix = 'amd64';
+                    break;
+                case 'arm64':
+                    archSuffix = 'arm64';
+                    break;
+                default:
+                    throw `Unsupported Linux architecture: ${arch}`;
+            }
+            const filename = `upx-${upx_version}-${archSuffix}_linux.tar.xz`;
             yield exec.exec('curl', [
                 '-LO',
-                `https://github.com/upx/upx/releases/download/v${upx_version}/upx-${upx_version}-amd64_linux.tar.xz`
+                `https://github.com/upx/upx/releases/download/v${upx_version}/${filename}`
             ], { cwd: tmpdir });
             yield exec.exec('tar', [
                 'xvJf',
-                `upx-${upx_version}-amd64_linux.tar.xz`,
+                filename,
                 '--strip-components=1',
-                `upx-${upx_version}-amd64_linux/upx`
+                `upx-${upx_version}-${archSuffix}_linux/upx`
             ], { cwd: tmpdir });
             return `${tmpdir}/upx`;
         }
@@ -3258,7 +3271,7 @@ function range(a, b, str) {
 
 /***/ }),
 
-/***/ 3717:
+/***/ 5490:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 var balanced = __nccwpck_require__(9417);
@@ -28213,7 +28226,7 @@ module.exports = parseParams
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Glob = void 0;
-const minimatch_1 = __nccwpck_require__(1953);
+const minimatch_1 = __nccwpck_require__(266);
 const path_scurry_1 = __nccwpck_require__(9569);
 const url_1 = __nccwpck_require__(7310);
 const pattern_js_1 = __nccwpck_require__(6866);
@@ -28463,7 +28476,7 @@ exports.Glob = Glob;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.hasMagic = void 0;
-const minimatch_1 = __nccwpck_require__(1953);
+const minimatch_1 = __nccwpck_require__(266);
 /**
  * Return true if the patterns provided contain any magic glob characters,
  * given the options provided.
@@ -28501,7 +28514,7 @@ exports.hasMagic = hasMagic;
 // Ignores are always parsed in dot:true mode
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Ignore = void 0;
-const minimatch_1 = __nccwpck_require__(1953);
+const minimatch_1 = __nccwpck_require__(266);
 const pattern_js_1 = __nccwpck_require__(6866);
 const defaultPlatform = typeof process === 'object' &&
     process &&
@@ -28612,7 +28625,7 @@ exports.Ignore = Ignore;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.glob = exports.hasMagic = exports.Glob = exports.unescape = exports.escape = exports.sync = exports.iterate = exports.iterateSync = exports.stream = exports.streamSync = exports.globIterate = exports.globIterateSync = exports.globSync = exports.globStream = exports.globStreamSync = void 0;
-const minimatch_1 = __nccwpck_require__(1953);
+const minimatch_1 = __nccwpck_require__(266);
 const glob_js_1 = __nccwpck_require__(2487);
 const has_magic_js_1 = __nccwpck_require__(3133);
 function globStreamSync(pattern, options = {}) {
@@ -28650,7 +28663,7 @@ exports.sync = Object.assign(globSync, {
     iterate: globIterateSync,
 });
 /* c8 ignore start */
-var minimatch_2 = __nccwpck_require__(1953);
+var minimatch_2 = __nccwpck_require__(266);
 Object.defineProperty(exports, "escape", ({ enumerable: true, get: function () { return minimatch_2.escape; } }));
 Object.defineProperty(exports, "unescape", ({ enumerable: true, get: function () { return minimatch_2.unescape; } }));
 var glob_js_2 = __nccwpck_require__(2487);
@@ -28688,7 +28701,7 @@ exports.glob.glob = exports.glob;
 // this is just a very light wrapper around 2 arrays with an offset index
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Pattern = void 0;
-const minimatch_1 = __nccwpck_require__(1953);
+const minimatch_1 = __nccwpck_require__(266);
 const isPatternList = (pl) => pl.length >= 1;
 const isGlobList = (gl) => gl.length >= 1;
 /**
@@ -28914,7 +28927,7 @@ exports.Pattern = Pattern;
 // synchronous utility for filtering entries and calculating subwalks
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Processor = exports.SubWalks = exports.MatchRecord = exports.HasWalkedCache = void 0;
-const minimatch_1 = __nccwpck_require__(1953);
+const minimatch_1 = __nccwpck_require__(266);
 /**
  * A cache of which patterns have been processed for a given Path
  */
@@ -29580,7 +29593,7 @@ exports.GlobStream = GlobStream;
 
 /***/ }),
 
-/***/ 903:
+/***/ 5934:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -29601,7 +29614,7 @@ exports.assertValidPattern = assertValidPattern;
 
 /***/ }),
 
-/***/ 3839:
+/***/ 7642:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -29609,8 +29622,8 @@ exports.assertValidPattern = assertValidPattern;
 // parse a single path portion
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AST = void 0;
-const brace_expressions_js_1 = __nccwpck_require__(5822);
-const unescape_js_1 = __nccwpck_require__(7305);
+const brace_expressions_js_1 = __nccwpck_require__(314);
+const unescape_js_1 = __nccwpck_require__(9820);
 const types = new Set(['!', '?', '+', '*', '@']);
 const isExtglobType = (c) => types.has(c);
 // Patterns that get prepended to bind to the start of either the
@@ -30197,7 +30210,7 @@ exports.AST = AST;
 
 /***/ }),
 
-/***/ 5822:
+/***/ 314:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -30356,7 +30369,7 @@ exports.parseClass = parseClass;
 
 /***/ }),
 
-/***/ 9004:
+/***/ 1477:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -30385,7 +30398,7 @@ exports.escape = escape;
 
 /***/ }),
 
-/***/ 1953:
+/***/ 266:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -30395,11 +30408,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.unescape = exports.escape = exports.AST = exports.Minimatch = exports.match = exports.makeRe = exports.braceExpand = exports.defaults = exports.filter = exports.GLOBSTAR = exports.sep = exports.minimatch = void 0;
-const brace_expansion_1 = __importDefault(__nccwpck_require__(3717));
-const assert_valid_pattern_js_1 = __nccwpck_require__(903);
-const ast_js_1 = __nccwpck_require__(3839);
-const escape_js_1 = __nccwpck_require__(9004);
-const unescape_js_1 = __nccwpck_require__(7305);
+const brace_expansion_1 = __importDefault(__nccwpck_require__(5490));
+const assert_valid_pattern_js_1 = __nccwpck_require__(5934);
+const ast_js_1 = __nccwpck_require__(7642);
+const escape_js_1 = __nccwpck_require__(1477);
+const unescape_js_1 = __nccwpck_require__(9820);
 const minimatch = (p, pattern, options = {}) => {
     (0, assert_valid_pattern_js_1.assertValidPattern)(pattern);
     // shortcut: comments match nothing.
@@ -31388,11 +31401,11 @@ class Minimatch {
 }
 exports.Minimatch = Minimatch;
 /* c8 ignore start */
-var ast_js_2 = __nccwpck_require__(3839);
+var ast_js_2 = __nccwpck_require__(7642);
 Object.defineProperty(exports, "AST", ({ enumerable: true, get: function () { return ast_js_2.AST; } }));
-var escape_js_2 = __nccwpck_require__(9004);
+var escape_js_2 = __nccwpck_require__(1477);
 Object.defineProperty(exports, "escape", ({ enumerable: true, get: function () { return escape_js_2.escape; } }));
-var unescape_js_2 = __nccwpck_require__(7305);
+var unescape_js_2 = __nccwpck_require__(9820);
 Object.defineProperty(exports, "unescape", ({ enumerable: true, get: function () { return unescape_js_2.unescape; } }));
 /* c8 ignore stop */
 exports.minimatch.AST = ast_js_1.AST;
@@ -31403,7 +31416,7 @@ exports.minimatch.unescape = unescape_js_1.unescape;
 
 /***/ }),
 
-/***/ 7305:
+/***/ 9820:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";

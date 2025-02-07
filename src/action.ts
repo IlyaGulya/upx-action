@@ -9,22 +9,40 @@ import * as path from 'path'
 async function downloadUpx(): Promise<string> {
   const upx_version = '4.2.2'
   const tmpdir = fs.mkdtempSync(path.join(os.tmpdir(), 'upx-action-'))
+
   if (os.type() == 'Linux') {
+    const arch = os.arch()
+    let archSuffix: string
+
+    switch (arch) {
+      case 'x64':
+        archSuffix = 'amd64'
+        break
+      case 'arm64':
+        archSuffix = 'arm64'
+        break
+      default:
+        throw `Unsupported Linux architecture: ${arch}`
+    }
+
+    const filename = `upx-${upx_version}-${archSuffix}_linux.tar.xz`
+
     await exec.exec(
       'curl',
       [
         '-LO',
-        `https://github.com/upx/upx/releases/download/v${upx_version}/upx-${upx_version}-amd64_linux.tar.xz`
+        `https://github.com/upx/upx/releases/download/v${upx_version}/${filename}`
       ],
       {cwd: tmpdir}
     )
+
     await exec.exec(
       'tar',
       [
         'xvJf',
-        `upx-${upx_version}-amd64_linux.tar.xz`,
+        filename,
         '--strip-components=1',
-        `upx-${upx_version}-amd64_linux/upx`
+        `upx-${upx_version}-${archSuffix}_linux/upx`
       ],
       {cwd: tmpdir}
     )

@@ -8,9 +8,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest]
+        node-version: [22]  # Specify Node.js version
     steps:
     - uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
     - name: Test Action
       run: |
         npm install
@@ -22,16 +30,22 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest]
     steps:
     - uses: actions/checkout@v3
+
     - name: Download test file
       run: |
-        curl -Ls https://github.com/svenstaro/proxyboi/releases/download/0.1.5/proxyboi-linux-amd64 -o testbinary
+        if [[ "${{ matrix.os }}" == "ubuntu-24.04-arm" ]]; then
+          curl -Ls https://github.com/svenstaro/proxyboi/releases/download/0.5.0/proxyboi-linux-aarch64 -o testbinary
+        else
+          curl -Ls https://github.com/svenstaro/proxyboi/releases/download/0.5.0/proxyboi-linux-amd64 -o testbinary
+        fi
         chmod +x testbinary
         cp testbinary testbinary2
         cp testbinary testbinary.glob1
         cp testbinary testbinary.glob2
+
     - name: Test Action
       uses: ./
       with:
